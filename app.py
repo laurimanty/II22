@@ -113,4 +113,4 @@ def alarms():
 if __name__ == '__main__':
     # important: Do not use reloader because this will create two Flask instances.
     # Flask-MQTT only supports running with one instance
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=False)
+    socketio.run(debug=False)
