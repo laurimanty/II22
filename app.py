@@ -83,10 +83,15 @@ def handle_connect(client, userdata, flags, rc):
     mqtt.subscribe('industrial_informatics_test/#')
 
 
-@app.route('/<string:page_name>/')
-def static_page(page_name):
+@app.route('/')
+def static_page():
     '''Render the frontend page'''
-    return render_template('%s.html' % page_name)
+    return render_template('index.html')
+
+@app.route('/scada')
+def static_page():
+    '''Render the frontend page'''
+    return render_template('scada.html')
 
 
 @app.get("/update")
@@ -108,4 +113,4 @@ def alarms():
 if __name__ == '__main__':
     # important: Do not use reloader because this will create two Flask instances.
     # Flask-MQTT only supports running with one instance
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=False)
+    socketio.run(debug=False)
