@@ -84,12 +84,12 @@ def handle_connect(client, userdata, flags, rc):
 
 
 @app.route('/')
-def static_page():
+def index():
     '''Render the frontend page'''
     return render_template('index.html')
 
 @app.route('/scada')
-def static_page():
+def scada():
     '''Render the frontend page'''
     return render_template('scada.html')
 
