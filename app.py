@@ -14,7 +14,7 @@ eventlet.monkey_patch()
 app = Flask(__name__)
 app.config['SECRET'] = 'my secret key'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['MQTT_BROKER_URL'] = 'test.mosquitto.org'
+app.config['MQTT_BROKER_URL'] = 'broker.mqttdashboard.com'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''
 app.config['MQTT_PASSWORD'] = ''
@@ -67,7 +67,7 @@ def handle_mqtt_message(client, userdata, message):
     event = data['payload']['state']
     print(robId,'\n', event)
     # Get correct mqtt broker message
-    if "industrial_informatics_test" in data['topic']:
+    if "ii22/telemetry" in data['topic']:
         # Insert data to databases and emit it to the frontend and update .html view
         db_object.insert_event(robotID=robId, eventype=event)
         socketio.emit('mqtt_message', data=db_object.get_all_events())
@@ -80,7 +80,7 @@ def handle_logging(client, userdata, level, buf):
 
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
-    mqtt.subscribe('industrial_informatics_test/#')
+    mqtt.subscribe('ii22/telemetry/#')
 
 
 @app.route('/')
