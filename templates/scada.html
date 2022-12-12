@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>II client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+    <style>
+        * {box-sizing: border-box}
+        
+        /* Set height of body and the document to 100% */
+        body, html {
+            font-family: "Open Sans", sans-serif;
+        background-color: #e4e4e4;
+        width: 100vw;
+        height: 100vh;
+        display: top;
+        align-items: center;
+        justify-content: top;
+        overflow: hidden;
+        }
+        
+        /* Style tab links */
+        .tablink {
+          background-color: #555;
+          color: white;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          font-size: 17px;
+          width: 25%;
+        }
+        
+        .tablink:hover {
+          background-color: rgb(141, 138, 138);
+        }
+        
+        /* Style the tab content (and add height:100% for full page content) */
+        .tabcontent {
+          color: black;
+          display: none;
+          padding: 100px 20px;
+          height: 100%;
+        }
+
+        table {
+          width: 100%;
+          font-size: 16px;
+          text-align:left;
+          align-items: center;
+          border: 1px solid black; 
+          border-collapse: collapse;
+        }
+    
+        
+        #About {background-color: orange;}
+        </style>
+</head>
+
+
+
+<body>
+
+<button class="tablink" onclick="openPage('Robot states', this, 'grey')" id="defaultOpen">State</button>
+<button class="tablink" onclick="openPage('Event history', this, 'grey')">History</button>
+<button class="tablink" onclick="openPage('Alarms', this, 'red')">Alarms</button>
+<button class="tablink" onclick="openPage('About', this, 'grey')">About</button>
+
+<div id="Robot states" class="tabcontent">
+  <h3>Current robot state</h3>
+  <p id="state_output">Robot states come here</p>
+</div>
+
+<div id="Event history" class="tabcontent">
+  <h3>Event history</h3>
+  <p id="output"> History data</p>
+</div>
+
+<div id="Alarms" class="tabcontent">
+  <h3>Alarm history</h3>
+  <p id="history_alarms"></p>
+</div>
+
+<div id="About" class="tabcontent">
+    <h3>About project</h3>
+    <p>This is second assignment in the Industrial Informatics course. 
+      It is a SCADA system with current state, history data and alarm monitoring. The History data analysis for KPI and MTBF is not implemented as they are not required becuse the threading problem that requires multithreading.</p>
+  </div>
+
+<script io src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // listen for mqtt_message events
+        // when a new message is received, log and append the data to the page
+        socket.on('mqtt_message', function(data) {
+        console.log(data);
+        update()
+        $('#output').html(data);
+        })
+    });
+
+
+
+    function update(){
+            $.get("/update", function(data){
+                $("#output").html(data)
+            });
+            $.get("/update_state", function(data){
+                $("#state_output").html(data)
+            });
+            $.get("/alarms", function(data){
+                $("#history_alarms").html(data)
+            });
+        }
+
+        update()
+        var intervalId = setInterval(function() {
+            update()
+        }, 1000);
+
+    
+
+
+
+    function openPage(pageName,elmnt,color) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+      }
+      document.getElementById(pageName).style.display = "block";
+      elmnt.style.backgroundColor = color;
+    }
+    
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    </script>
+
+</body>
+</html>

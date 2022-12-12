@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>II client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+
+<h1>II web client</h1>
+<p>This client will contact the backend API endpoints</p>
+
+<h3>Request Get State - REST endpoint</h3>
+<button onclick="getState()">Execute Get state</button>
+
+<div id="log"> </div>
+
+<script>
+
+    function getState(){
+        console.log("get state routine...");
+
+        $.get( "/conveyors/1/state", function( data ) {
+            $("#log").html(data);
+            //alert( "Load was performed." );
+
+        });
+    }
+
+
+</script>
+
+</body>
+</html>
